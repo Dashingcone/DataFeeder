@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Properties;
 
 @RestController
-@RequestMapping(path = "getData")
+@RequestMapping(path = "/getData")
 public class controller {
     @GetMapping
     public void func()  {
