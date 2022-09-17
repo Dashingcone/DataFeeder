@@ -35,4 +35,8 @@ public class UserSchema {
      @NotEmpty
      String date;
 
+     @NotEmpty
+     @NotNull
+     String roles;
+
 }

@@ -23,6 +23,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
@@ -55,7 +57,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 .withClaim("roles",user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .sign(algorithm);
 
-        String refereshToken = JWT.create()
+        String refreshToken = JWT.create()
                 .withSubject(user.getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() +30*60*1000))
                 .withIssuer(request.getRequestURL().toString())
@@ -63,12 +65,12 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 .sign(algorithm);
 
         response.setHeader("acessToken",accessToken);
-        response.setHeader("refreshToken",refereshToken);
+        response.setHeader("refreshToken",refreshToken);
 
         Map<String,String> tokens = new HashMap<>();
         tokens.put("acessToken",accessToken);
-        tokens.put("refereshToken",refereshToken);
-        response.setContentType("application/json");
+        tokens.put("refereshToken",refreshToken);
+        response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(),tokens);
     }
 

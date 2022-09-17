@@ -80,4 +80,20 @@ public class UserSchemaSaveServiceImpl implements UserSchemaServiceSave, UserDet
 
         return userSchema1.isEmpty()? (T) userSchema : (T) "User Already Present";
     }
+
+    @Override
+    public <T> T getUsers() {
+            return (T) userSchemaRepository.findAll();
+    }
+
+    @Override
+    public UserSchema getSingleUser(String userName) {
+        Optional<UserSchema> sch =  userSchemaRepository.findById(userName);
+        if(sch.isEmpty())
+            throw new RuntimeException("No such user found with username: "+userName);
+
+        return sch.get();
+    }
+
+
 }
