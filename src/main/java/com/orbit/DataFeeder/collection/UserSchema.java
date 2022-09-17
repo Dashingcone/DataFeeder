@@ -24,7 +24,7 @@ import javax.validation.constraints.Pattern;
 public class UserSchema {
 
      @Id
-     String email;
+     String username;
 
      @NotEmpty
      String name;
