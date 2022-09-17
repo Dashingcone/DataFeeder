@@ -8,16 +8,11 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orbit.DataFeeder.Service.InotebookService;
 import com.orbit.DataFeeder.Service.UserSchemaServiceSave;
-import com.orbit.DataFeeder.collection.Inotebook;
 import com.orbit.DataFeeder.collection.UserSchema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +21,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
@@ -48,10 +42,6 @@ public class controller {
     private final static Logger logger =
             Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
-    @PostMapping(path = "/api")
-    public String save(@RequestBody Inotebook inotebook)  {
-        return inotebookService.save(inotebook);
-    }
 
     @PostMapping(path = "/api/createUser",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createUser(@RequestBody UserSchema userSchema)  {

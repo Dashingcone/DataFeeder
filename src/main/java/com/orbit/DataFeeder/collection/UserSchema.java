@@ -30,6 +30,7 @@ public class UserSchema {
      String name;
 
      @NotNull
+     @NotEmpty
      String password;
 
      @NotEmpty
