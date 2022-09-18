@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -68,6 +69,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         response.setHeader("refreshToken",refreshToken);
 
         Map<String,String> tokens = new HashMap<>();
+        tokens.put("username","The logged in user is: "+user.getUsername());
         tokens.put("acessToken",accessToken);
         tokens.put("refreshToken",refreshToken);
         response.setContentType(APPLICATION_JSON_VALUE);
@@ -77,6 +79,10 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        super.unsuccessfulAuthentication(request, response, failed);
+        response.setHeader("Error: ","Wrong Username or Password Combination. Please try again");
+        response.setStatus(FORBIDDEN.value());
+        Map<String,String> tokens = new HashMap<>();
+        tokens.put("Forbidden: ","Wrong Username or Password Combination. Please try again");
+        new ObjectMapper().writeValue(response.getOutputStream(),tokens);
     }
 }

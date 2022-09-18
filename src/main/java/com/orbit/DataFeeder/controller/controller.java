@@ -8,6 +8,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orbit.DataFeeder.Service.InotebookService;
 import com.orbit.DataFeeder.Service.UserSchemaServiceSave;
+import com.orbit.DataFeeder.collection.UserResponse;
 import com.orbit.DataFeeder.collection.UserSchema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -67,6 +68,33 @@ public class controller {
         return res;
     }
 
+    @GetMapping(path = "/api/getUser",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?>  getOneUser(HttpServletRequest request)  {
+        String authHeader = request.getHeader(AUTHORIZATION);
+        ResponseEntity<?> res = null;
+        UserResponse userResponse = null;
+        if(authHeader!=null && authHeader.startsWith(BEARER)) {
+            try {
+                String refreshToken = authHeader.substring(BEARER.length());
+                Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+                JWTVerifier verifier = JWT.require(algorithm).build();
+                DecodedJWT decodedJWT = verifier.verify(refreshToken);
+                String userName = decodedJWT.getSubject();
+
+
+                try {
+                    userResponse = userSchemaServiceSave.getSingleUser(userName);
+                } catch (Exception e) {
+                    throw new RuntimeException("Error fetching user");
+                }
+            }catch (Exception e){
+            }
+        }
+
+            res = new  ResponseEntity<>(userResponse,HttpStatus.FOUND);
+        return res;
+    }
+
     @GetMapping(path = "/refreshToken",produces = MediaType.APPLICATION_JSON_VALUE)
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String authHeader = request.getHeader(AUTHORIZATION);
@@ -79,18 +107,18 @@ public class controller {
                 DecodedJWT decodedJWT = verifier.verify(refreshToken);
                 String userName = decodedJWT.getSubject();
 
-                 UserSchema userSchema = null;
+                 UserResponse userResponse = null;
                  try{
-                     userSchema = userSchemaServiceSave.getSingleUser(userName);
+                     userResponse = userSchemaServiceSave.getSingleUser(userName);
                  }catch (Exception e){
                      throw new RuntimeException("Error fetching user");
                  }
 
                 String accessToken = JWT.create()
-                        .withSubject(userSchema.getUsername())
+                        .withSubject(userResponse.getUsername())
                         .withExpiresAt(new Date(System.currentTimeMillis() +10*60*1000))
                         .withIssuer(request.getRequestURL().toString())
-                        .withClaim("roles", userSchema.getRoles())
+                        .withClaim("roles", userResponse.getRoles())
                         .sign(algorithm);
 
 

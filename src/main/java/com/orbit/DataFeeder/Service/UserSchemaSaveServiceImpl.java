@@ -1,9 +1,11 @@
 package com.orbit.DataFeeder.Service;
 
 import com.orbit.DataFeeder.Repository.UserSchemaRepository;
+import com.orbit.DataFeeder.collection.UserResponse;
 import com.orbit.DataFeeder.collection.UserSchema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -37,7 +39,6 @@ public class UserSchemaSaveServiceImpl implements UserSchemaServiceSave, UserDet
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println(username+" ########### ");
         Optional<UserSchema> userSchema = userSchemaRepository.findById(username);
         UserSchema user = null;
         if(userSchema.isEmpty()){
@@ -85,12 +86,14 @@ public class UserSchemaSaveServiceImpl implements UserSchemaServiceSave, UserDet
     }
 
     @Override
-    public UserSchema getSingleUser(String userName) {
+    public UserResponse getSingleUser(String userName) {
         Optional<UserSchema> sch =  userSchemaRepository.findById(userName);
+        UserResponse userResponse = new UserResponse(sch.get().getUsername(),sch.get().getName(),
+                sch.get().getDate(),sch.get().getRoles());
         if(sch.isEmpty())
             throw new RuntimeException("No such user found with username: "+userName);
 
-        return sch.get();
+        return userResponse;
     }
 
 
