@@ -70,29 +70,8 @@ public class controller {
 
     @GetMapping(path = "/api/getUser",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?>  getOneUser(HttpServletRequest request)  {
-        String authHeader = request.getHeader(AUTHORIZATION);
-        ResponseEntity<?> res = null;
-        UserResponse userResponse = null;
-        if(authHeader!=null && authHeader.startsWith(BEARER)) {
-            try {
-                String refreshToken = authHeader.substring(BEARER.length());
-                Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-                JWTVerifier verifier = JWT.require(algorithm).build();
-                DecodedJWT decodedJWT = verifier.verify(refreshToken);
-                String userName = decodedJWT.getSubject();
-
-
-                try {
-                    userResponse = userSchemaServiceSave.getSingleUser(userName);
-                } catch (Exception e) {
-                    throw new RuntimeException("Error fetching user");
-                }
-            }catch (Exception e){
-            }
-        }
-
-            res = new  ResponseEntity<>(userResponse,HttpStatus.FOUND);
-        return res;
+        UserResponse userResponse = utilityToFetchUserFromToken(request);
+        return new  ResponseEntity<>(userResponse,HttpStatus.FOUND);
     }
 
     @GetMapping(path = "/refreshToken",produces = MediaType.APPLICATION_JSON_VALUE)
@@ -155,4 +134,28 @@ public class controller {
         }
     }
 
+
+    public UserResponse utilityToFetchUserFromToken(HttpServletRequest request){
+        String authHeader = request.getHeader(AUTHORIZATION);
+        UserResponse userResponse = null;
+        if(authHeader!=null && authHeader.startsWith(BEARER)) {
+            try {
+                String refreshToken = authHeader.substring(BEARER.length());
+                Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+                JWTVerifier verifier = JWT.require(algorithm).build();
+                DecodedJWT decodedJWT = verifier.verify(refreshToken);
+                String userName = decodedJWT.getSubject();
+
+
+                try {
+                    userResponse = userSchemaServiceSave.getSingleUser(userName);
+                } catch (Exception e) {
+                    throw new RuntimeException("Error fetching user");
+                }
+            }catch (Exception e){
+            }
+        }
+
+        return userResponse;
+    }
 }

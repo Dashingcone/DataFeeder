@@ -11,15 +11,13 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-
 @Data
-@Document(collection = "NoteSchema")
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @AllArgsConstructor
-@Builder
-public class NoteSchema {
+@Document(collection = "NoteSchema")
+public class NoteDetail {
 
-    String username;
     @NotBlank
     @NotEmpty
     @NotNull
