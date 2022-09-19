@@ -41,8 +41,7 @@ public class NotesController {
     public ResponseEntity<?> addNotes(@RequestBody NoteDetail noteDetail, HttpServletRequest request) throws NoSuchFieldException {
         ResponseEntity<?> res = null;
         String username = utilityToFetchUserFromToken(request);
-        inotebookService.save(noteDetail,username);
-        return new  ResponseEntity<>("userResponse",HttpStatus.FOUND);
+        return new  ResponseEntity<>(inotebookService.save(noteDetail,username),HttpStatus.FOUND);
     }
 
     @GetMapping(path = "/api/fetchAllNotes",produces = MediaType.APPLICATION_JSON_VALUE)

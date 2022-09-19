@@ -15,7 +15,7 @@ public class InotebookServiceImpl implements InotebookService {
     @Override
     public NoteSchema save(NoteDetail noteDetail,String username) {
         NoteSchema noteSchema = new NoteSchema(username,noteDetail.getTitle(),
-                noteDetail.getDescription(),noteDetail.getTag(),noteDetail.getDate());
+                noteDetail.getDescription(),noteDetail.getTag(),String.valueOf(System.currentTimeMillis()));
 
         return noteBookDetails.save(noteSchema);
     }

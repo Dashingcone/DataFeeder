@@ -29,5 +29,4 @@ public class NoteDetail {
     String description;
 
     String tag;
-    String date;
 }
