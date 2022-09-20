@@ -40,14 +40,26 @@ public class NotesController {
     @PostMapping(path = "/api/addNotes",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addNotes(@RequestBody NoteDetail noteDetail, HttpServletRequest request) throws NoSuchFieldException {
         ResponseEntity<?> res = null;
-        String username = utilityToFetchUserFromToken(request);
-        return new  ResponseEntity<>(inotebookService.save(noteDetail,username),HttpStatus.FOUND);
+        try{
+            String username = utilityToFetchUserFromToken(request);
+            res = new  ResponseEntity<>(inotebookService.save(noteDetail,username),HttpStatus.OK);
+        }catch (Exception e){
+            logger.log(Level.SEVERE," Internal Server Error");
+            new ResponseEntity<>("Internal Server Error",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return res;
     }
 
     @GetMapping(path = "/api/fetchAllNotes",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?>  getUsers()  {
+    public ResponseEntity<?>  getUsers(HttpServletRequest request)  {
         ResponseEntity<?> res = null;
-
+        try{
+            res = new  ResponseEntity<>(inotebookService.findAll(),HttpStatus.FOUND);
+        }catch (Exception e){ 
+            System.out.println(" Error hai bhai ");
+            logger.log(Level.SEVERE," Internal Server Error");
+            new ResponseEntity<>("Internal Server Error",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         return res;
     }
 

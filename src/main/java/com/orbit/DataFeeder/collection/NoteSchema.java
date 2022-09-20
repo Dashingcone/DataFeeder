@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotBlank;
@@ -19,17 +20,9 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class NoteSchema {
 
+    @Id
+    String noteId;
     String username;
-    @NotBlank
-    @NotEmpty
-    @NotNull
-    String title;
-
-    @NotBlank
-    @NotEmpty
-    @NotNull
-    String description;
-
-    String tag;
+    NoteDetail noteDetail;
     String date;
 }
