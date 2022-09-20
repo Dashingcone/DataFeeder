@@ -55,7 +55,7 @@ public class NotesController {
         ResponseEntity<?> res = null;
         try{
             res = new  ResponseEntity<>(inotebookService.findAll(),HttpStatus.FOUND);
-        }catch (Exception e){ 
+        }catch (Exception e){
             System.out.println(" Error hai bhai ");
             logger.log(Level.SEVERE," Internal Server Error");
             new ResponseEntity<>("Internal Server Error",HttpStatus.INTERNAL_SERVER_ERROR);
@@ -63,6 +63,36 @@ public class NotesController {
         return res;
     }
 
+
+
+    @PutMapping(path = "/api/updateNotes",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?>  updateNote(@RequestParam String id , @RequestBody NoteDetail noteDetail,
+                                         HttpServletRequest request)  {
+        ResponseEntity<?> res = null;
+        String username = utilityToFetchUserFromToken(request);
+        try{
+            res = inotebookService.update(username,id,noteDetail);
+        }catch (Exception e){
+            logger.log(Level.SEVERE," Internal Server Error");
+            new ResponseEntity<>("Internal Server Error",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return res;
+    }
+
+
+    @DeleteMapping(path = "/api/deleteNotes",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?>  deleteNotes(@RequestParam String id ,
+                                         HttpServletRequest request)  {
+        ResponseEntity<?> res = null;
+        String username = utilityToFetchUserFromToken(request);
+        try{
+            res = inotebookService.delete(id,username);
+        }catch (Exception e){
+            logger.log(Level.SEVERE," Internal Server Error");
+            new ResponseEntity<>("Internal Server Error",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return res;
+    }
 
     public String utilityToFetchUserFromToken(HttpServletRequest request){
         String authHeader = request.getHeader(AUTHORIZATION);
