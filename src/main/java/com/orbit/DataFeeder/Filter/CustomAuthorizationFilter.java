@@ -66,7 +66,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     response.setStatus(FORBIDDEN.value());
 
                    Map<String,String> map = new HashMap<>();
-                   map.put("Error_Message",e.getMessage());
+                   map.put("Error_Message","null/wrong/expired/compromised Token");
                    response.setContentType(APPLICATION_JSON_VALUE);
                    new ObjectMapper().writeValue(response.getOutputStream(),map);
                }
