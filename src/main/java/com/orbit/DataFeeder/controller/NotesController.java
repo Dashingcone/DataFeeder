@@ -53,8 +53,9 @@ public class NotesController {
     @GetMapping(path = "/api/fetchAllNotes",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?>  getUsers(HttpServletRequest request)  {
         ResponseEntity<?> res = null;
+        String username = utilityToFetchUserFromToken(request);
         try{
-            res = new  ResponseEntity<>(inotebookService.findAll(),HttpStatus.FOUND);
+            res = new  ResponseEntity<>(inotebookService.findAll(username),HttpStatus.FOUND);
         }catch (Exception e){
             System.out.println(" Error hai bhai ");
             logger.log(Level.SEVERE," Internal Server Error");

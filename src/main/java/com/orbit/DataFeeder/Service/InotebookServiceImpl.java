@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class InotebookServiceImpl implements InotebookService {
@@ -32,9 +33,12 @@ public class InotebookServiceImpl implements InotebookService {
     }
 
     @Override
-    public  List<NoteSchema> findAll() {
+    public  List<NoteSchema> findAll(String username) {
         List<NoteSchema> lis = noteBookDetails.findAll();
-        return lis;
+
+        return lis.stream().filter(f->f.getUsername().equals(username))
+                .map(m-> new NoteSchema(m.getNoteId(),m.getUsername(),m.getNoteDetail(),m.getDate()))
+                .collect(Collectors.toList());
     }
 
     @Override

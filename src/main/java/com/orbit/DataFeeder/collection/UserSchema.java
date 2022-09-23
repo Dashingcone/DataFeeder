@@ -33,7 +33,6 @@ public class UserSchema {
      @NotEmpty
      String password;
 
-     @NotEmpty
      String date;
 
      @NotEmpty

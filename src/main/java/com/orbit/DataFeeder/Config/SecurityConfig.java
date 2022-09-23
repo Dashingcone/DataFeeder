@@ -39,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         customAuthenticationFilter.setFilterProcessesUrl("/notebook/login");
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers("/notebook/login***","/notebook/refreshToken****").permitAll();
+        http.authorizeRequests().antMatchers("/notebook/login***","/notebook/refreshToken****","/notebook/createUser***").permitAll();
         http.authorizeRequests().antMatchers(HttpMethod.POST,"/notebook/api/***").hasAnyAuthority("Default");
         http.authorizeRequests().antMatchers(HttpMethod.GET,"/notebook/api/**").hasAnyAuthority("Default");
         http.authorizeRequests().anyRequest().authenticated();

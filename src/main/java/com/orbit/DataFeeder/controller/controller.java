@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,10 +46,11 @@ public class controller {
             Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
 
-    @PostMapping(path = "/api/createUser",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/createUser",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createUser(@RequestBody UserSchema userSchema)  {
         ResponseEntity<?> res = null;
         try{
+            userSchema.setDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Timestamp(System.currentTimeMillis())));
             Object obj = userSchemaServiceSave.save(userSchema);
             res =  new ResponseEntity(obj, HttpStatus.CREATED);
         }catch (Exception e){
