@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@CrossOrigin(origins = "http://domain2.com", maxAge = 3600)
 @RestController
 @RequestMapping(path = "/notebook")
 public class NotesController {
