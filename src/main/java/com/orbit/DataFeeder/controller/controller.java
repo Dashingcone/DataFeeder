@@ -5,16 +5,19 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orbit.DataFeeder.Service.InotebookService;
 import com.orbit.DataFeeder.Service.UserSchemaServiceSave;
+import com.orbit.DataFeeder.collection.TokenCapture;
 import com.orbit.DataFeeder.collection.UserResponse;
 import com.orbit.DataFeeder.collection.UserSchema;
+import org.bson.json.JsonObject;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,16 +48,19 @@ public class controller {
     private final static Logger logger =
             Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
+    final static String loginUrl = "http://localhost:8080/notebook/login";
+
 
     @PostMapping(path = "/createUser",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createUser(@RequestBody UserSchema userSchema)  {
-        ResponseEntity<?> res = null;
+        ResponseEntity<?> res= null;
         try{
             userSchema.setDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Timestamp(System.currentTimeMillis())));
             Object obj = userSchemaServiceSave.save(userSchema);
             res =  new ResponseEntity(obj, HttpStatus.CREATED);
         }catch (Exception e){
             logger.log(Level.INFO,"User Creation Failed");
+            throw new RuntimeException(e);
         }
         return res;
     }

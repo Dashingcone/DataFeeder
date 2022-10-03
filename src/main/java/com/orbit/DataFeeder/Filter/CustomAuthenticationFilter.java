@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -42,6 +43,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
        String password = request.getParameter("password");
         logger.log(Level.INFO,"Username is : "+username);
         logger.log(Level.INFO,"Password is : "+password);
+
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,password);
         return  authenticationManager.authenticate(authenticationToken);
@@ -67,11 +69,13 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
         response.setHeader("accessToken",accessToken);
         response.setHeader("refreshToken",refreshToken);
+        response.setStatus(OK.value());
 
         Map<String,String> tokens = new HashMap<>();
         tokens.put("username","The logged in user is: "+user.getUsername());
-        tokens.put("acessToken",accessToken);
+        tokens.put("accessToken",accessToken);
         tokens.put("refreshToken",refreshToken);
+        tokens.put("statusCode",String.valueOf(HttpServletResponse.SC_OK));
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(),tokens);
     }

@@ -3,6 +3,7 @@ package com.orbit.DataFeeder.Service;
 import com.orbit.DataFeeder.Repository.UserSchemaRepository;
 import com.orbit.DataFeeder.collection.UserResponse;
 import com.orbit.DataFeeder.collection.UserSchema;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -23,6 +25,7 @@ import java.util.logging.Logger;
 
 
 @Service
+@Transactional
 public class UserSchemaSaveServiceImpl implements UserSchemaServiceSave, UserDetailsService {
 
     @Autowired
@@ -77,7 +80,8 @@ public class UserSchemaSaveServiceImpl implements UserSchemaServiceSave, UserDet
             userSchemaRepository.save(userSchema);
         }
 
-        return userSchema1.isEmpty()? (T) userSchema : (T) "User Already Present";
+
+        return userSchema1.isEmpty()? (T) "User created!" : (T) "User Already Present";
     }
 
     @Override
