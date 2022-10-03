@@ -5,19 +5,15 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orbit.DataFeeder.Service.InotebookService;
 import com.orbit.DataFeeder.Service.UserSchemaServiceSave;
-import com.orbit.DataFeeder.collection.TokenCapture;
 import com.orbit.DataFeeder.collection.UserResponse;
 import com.orbit.DataFeeder.collection.UserSchema;
-import org.bson.json.JsonObject;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,7 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.util.Arrays.stream;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -51,17 +47,30 @@ public class controller {
     final static String loginUrl = "http://localhost:8080/notebook/login";
 
 
-    @PostMapping(path = "/createUser",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> createUser(@RequestBody UserSchema userSchema)  {
+    @ResponseStatus(CREATED)
+    @PostMapping(path = "/createUser",consumes = APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> createUser(@RequestBody UserSchema userSchema, HttpServletResponse response) throws IOException {
         ResponseEntity<?> res= null;
+        Map<String, String> map = new HashMap<String, String>();
+        HttpHeaders httpHeaders = new HttpHeaders();
+
         try{
             userSchema.setDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Timestamp(System.currentTimeMillis())));
-            Object obj = userSchemaServiceSave.save(userSchema);
-            res =  new ResponseEntity(obj, HttpStatus.CREATED);
+            String obj = userSchemaServiceSave.save(userSchema);
+            map.put("message", obj);
+
+            if(obj.contains("created")){
+                httpHeaders.add("statusCode", String.valueOf(CREATED));
+                res = new ResponseEntity<Object>(map, httpHeaders,CREATED);
+            } else{
+                httpHeaders.add("statusCode", String.valueOf(FOUND));
+                res = new ResponseEntity<Object>(map,httpHeaders,FOUND);
+            }
         }catch (Exception e){
             logger.log(Level.INFO,"User Creation Failed");
             throw new RuntimeException(e);
         }
+
         return res;
     }
 

@@ -39,11 +39,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
-//    @Override
-//    public void configure(WebSecurity web) throws Exception {
-//        web.ignoring().antMatchers(HttpMethod.OPTIONS, "/**");
-//    }
-
     @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -52,7 +47,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         config.addExposedHeader("Authorization");
+        config.addExposedHeader("statusCode");
         config.addExposedHeader("Content-Type");
+        config.addExposedHeader("accessToken");
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
